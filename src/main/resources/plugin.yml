@@ -1,4 +1,23 @@
 name: FunTwists
 version: '${project.version}'
-main: me.flamboyant.funtwists.Funtwists
+main: me.flamboyant.small.Main
 api-version: 1.19
+commands:
+  f_item_faker:
+    description: Renaming an object into another can transform it if the shape looks like
+    permission: f_item_faker.use
+  f_milk_human:
+    description: You can milk players and it provides special powers
+    permission: f_milk_human.use
+  f_summon_ball:
+    description: Rename snowballs with mob name so it make them spawn
+    permission: f_summon_ball.use
+  f_mangrove_chaos:
+    description: Mangrove is wtf
+    permission: f_mangrove_chaos.use
+  f_heroes:
+    description: Gives individual power to players
+    permission: f_heroes.use
+  f_advancement_faker:
+    description: Player can fake advancements
+    permission: f_advancement_faker.use
