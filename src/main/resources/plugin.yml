@@ -1,0 +1,4 @@
+name: FunTwists
+version: '${project.version}'
+main: me.flamboyant.funtwists.Funtwists
+api-version: 1.19
