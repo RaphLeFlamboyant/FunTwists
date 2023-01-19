@@ -16,6 +16,7 @@ public class Main extends FlamboyantPlugin {
         getCommand("f_mangrove_chaos").setExecutor(commandDispatcher);
         getCommand("f_heroes").setExecutor(commandDispatcher);
         getCommand("f_advancement_faker").setExecutor(commandDispatcher);
+        getCommand("f_stuff_mirror").setExecutor(commandDispatcher);
     }
 
     @Override

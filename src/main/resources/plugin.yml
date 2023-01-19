@@ -21,3 +21,6 @@ commands:
   f_advancement_faker:
     description: Player can fake advancements
     permission: f_advancement_faker.use
+  f_stuff_mirror:
+    description: You and a target get duplicated item of each other
+    permission: f_stuff_mirror.use

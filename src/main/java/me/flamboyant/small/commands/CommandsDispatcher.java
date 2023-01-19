@@ -7,6 +7,7 @@ import me.flamboyant.small.MobSummoningBall;
 import me.flamboyant.small.MangroveChaos;
 import me.flamboyant.small.advancementfaker.AdvancementFaker;
 import me.flamboyant.small.heroes.HeroesAdapter;
+import me.flamboyant.small.stuffmirror.GetCraftAndLootMirroredListener;
 import me.flamboyant.utils.ILaunchablePlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -40,6 +41,9 @@ public class CommandsDispatcher implements CommandExecutor {
                     break;
                 case "f_advancement_faker":
                     pluginToLaunch = AdvancementFaker.getInstance();
+                    break;
+                case "f_stuff_mirror":
+                    pluginToLaunch = GetCraftAndLootMirroredListener.getInstance();
                     break;
                 default :
                     break;
