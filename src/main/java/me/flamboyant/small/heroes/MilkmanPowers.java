@@ -5,7 +5,6 @@ import me.flamboyant.configurable.parameters.SinglePlayerParameter;
 import me.flamboyant.utils.Common;
 import me.flamboyant.utils.ILaunchablePlugin;
 import me.flamboyant.utils.ItemHelper;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -21,30 +20,29 @@ import org.bukkit.inventory.PlayerInventory;
 import java.util.Arrays;
 import java.util.List;
 
-public class MskooPowers implements Listener, ILaunchablePlugin {
-    private Player mskooPlayer;
-    private SinglePlayerParameter msPlayerParameter = new SinglePlayerParameter("Mskoo powers", "A qui les pouvoirs de Mskoo ?", true);
+public class MilkmanPowers implements Listener, ILaunchablePlugin {
+    private Player milkmanPlayer;
+    private SinglePlayerParameter msPlayerParameter = new SinglePlayerParameter("Milkman powers", "A qui les pouvoirs de Milkman ?", true);
 
-    private static MskooPowers instance;
-    public static MskooPowers getInstance()
+    private static MilkmanPowers instance;
+    public static MilkmanPowers getInstance()
     {
         if (instance == null)
         {
-            instance = new MskooPowers();
+            instance = new MilkmanPowers();
         }
 
         return instance;
     }
 
-    protected MskooPowers()
+    protected MilkmanPowers()
     {
     }
 
     @Override
     public boolean start() {
-        mskooPlayer = msPlayerParameter.getConcernedPlayer();
-        if (mskooPlayer == null) {
-            Bukkit.getLogger().info("Le joueur recevant le pouvoir de Mskoo est absent du manhunt");
+        milkmanPlayer = msPlayerParameter.getConcernedPlayer();
+        if (milkmanPlayer == null) {
             return false;
         }
 
@@ -65,7 +63,7 @@ public class MskooPowers implements Listener, ILaunchablePlugin {
 
     @Override
     public void resetParameters() {
-        msPlayerParameter = new SinglePlayerParameter("Mskoo powers", "A qui les pouvoirs de Mskoo ?", true);
+        msPlayerParameter = new SinglePlayerParameter("Milkman powers", "A qui les pouvoirs de Milkman ?", true);
     }
 
     private boolean running;
@@ -87,7 +85,7 @@ public class MskooPowers implements Listener, ILaunchablePlugin {
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
         if (!(event.getRightClicked() instanceof Player)) return;
         Player target = (Player) event.getRightClicked();
-        if (target != mskooPlayer) return;
+        if (target != milkmanPlayer) return;
         Player player = event.getPlayer();
         if (player.getInventory().getItem(event.getHand()).getType() != Material.BUCKET) return;
 
@@ -98,11 +96,13 @@ public class MskooPowers implements Listener, ILaunchablePlugin {
         if (buckets.getAmount() > 1) {
             buckets.setAmount(buckets.getAmount() - 1);
             inv.setItemInMainHand(buckets);
-
             inv.addItem(item);
         }
         else
             inv.setItemInMainHand(item);
+
+        milkmanPlayer.sendMessage(player.getDisplayName() + " vous a pris du lait");
+        player.sendMessage("Milkman vous a donné du lait");
     }
 
     @EventHandler
@@ -114,16 +114,10 @@ public class MskooPowers implements Listener, ILaunchablePlugin {
         double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         player.setHealth(maxHealth);
 
-        if (player != mskooPlayer) {
-            player.sendMessage(ChatColor.LIGHT_PURPLE + "Cette voluptueuse sensation vous enhivre. " +
-                    "Vous voyez des mirages, l'image Mskoo en tenue de nymphe vous obsède. " +
-                    "Vous ne comprenez pas ce qui vous arrive ... Vous vous sentez irresistiblement attiré par lui.");
-            player.teleport(mskooPlayer.getLocation());
-        }
-        else player.sendMessage("C'est quoi ce que j'ai bu déjà ?");
+        player.sendMessage("Le lait vous a fait du bien");
     }
 
     private ItemStack getMilkBucketItem() {
-        return ItemHelper.generateItem(Material.MILK_BUCKET, 1, "Essence spirituelle de Mskoo", Arrays.asList("Jus aux 1000 pouvoirs"), true, Enchantment.MULTISHOT, true, false);
+        return ItemHelper.generateItem(Material.MILK_BUCKET, 1, "Lait offert par Milkman", Arrays.asList("Lait aux 1000 pouvoirs"), true, Enchantment.MULTISHOT, true, false);
     }
 }

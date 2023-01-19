@@ -2,6 +2,7 @@ package  me.flamboyant.small.heroes;
 
 import me.flamboyant.configurable.parameters.AParameter;
 import me.flamboyant.configurable.parameters.SinglePlayerParameter;
+import me.flamboyant.utils.ChatColorUtils;
 import me.flamboyant.utils.Common;
 import me.flamboyant.utils.ILaunchablePlugin;
 import me.flamboyant.utils.ItemHelper;
@@ -25,14 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class AzadaxPowers implements Listener, ILaunchablePlugin {
+public class DofusPowers implements Listener, ILaunchablePlugin {
     private static final int bramblesCooldownTicks = 10 * 60 * 20;
     private static final int crazyCooldownTicks = 5 * 60 * 20;
     private static final int sacrificedCooldownTicks = 15 * 60 * 20;
     private static final int treeingCooldownTicks = 1 * 60 * 20;
     private static final int absorbCooldownTicks = 15 * 60 * 20;
-    private SinglePlayerParameter azadaxPlayerParameter = new SinglePlayerParameter("Azadax powers", "A qui les pouvoirs d'Azadax ?", true);
-    private List<ItemStack> azadaxItems = Arrays.asList(getBramblesItem(), getTreeingItem(), getCrazyPuppetItem(), getPuppetAbsorbItem(), getSacrificedPuppetItem());
+    private SinglePlayerParameter dofusPlayerParameter = new SinglePlayerParameter("Dofus powers", "A qui les pouvoirs de Dofus ?", true);
+    private List<ItemStack> dofusItems = Arrays.asList(getBramblesItem(), getTreeingItem(), getCrazyPuppetItem(), getPuppetAbsorbItem(), getSacrificedPuppetItem());
     private BukkitTask task;
     private HashMap<UUID, Boolean> playerBlocked = new HashMap<>();
 
@@ -40,33 +41,32 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
     private Entity sacrificedEntity;
     private int sacrificedTicksRemaining;
 
-    private static AzadaxPowers instance;
-    public static AzadaxPowers getInstance()
+    private static DofusPowers instance;
+    public static DofusPowers getInstance()
     {
         if (instance == null)
         {
-            instance = new AzadaxPowers();
+            instance = new DofusPowers();
         }
 
         return instance;
     }
 
-    protected AzadaxPowers()
+    protected DofusPowers()
     {
     }
 
     @Override
     public boolean start() {
-        Player azadaxPlayer = azadaxPlayerParameter.getConcernedPlayer();
-        if (azadaxPlayer == null) {
-            Bukkit.getLogger().info("Le joueur recevant le pouvoir de Crazadax est absent du manhunt");
+        Player dofusPlayer = dofusPlayerParameter.getConcernedPlayer();
+        if (dofusPlayer == null) {
             return false;
         }
 
         Common.server.getPluginManager().registerEvents(this, Common.plugin);
         task = Bukkit.getScheduler().runTaskTimer(Common.plugin, () -> checkPuppets(), 5 * 20, 5 * 20);
 
-        Inventory inv = azadaxPlayer.getInventory();
+        Inventory inv = dofusPlayer.getInventory();
         inv.setItem(4, getBramblesItem());
         inv.setItem(5, getCrazyPuppetItem());
         inv.setItem(6, getSacrificedPuppetItem());
@@ -74,13 +74,15 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
         inv.setItem(8, getPuppetAbsorbItem());
 
 
-        azadaxPlayer.setCooldown(Material.OAK_SAPLING, 0);
-        azadaxPlayer.setCooldown(Material.ARMOR_STAND, 0);
-        azadaxPlayer.setCooldown(Material.GHAST_TEAR, 0);
-        azadaxPlayer.setCooldown(Material.TNT, 0);
-        azadaxPlayer.setCooldown(Material.WEEPING_VINES, 0);
+        dofusPlayer.setCooldown(Material.OAK_SAPLING, 0);
+        dofusPlayer.setCooldown(Material.ARMOR_STAND, 0);
+        dofusPlayer.setCooldown(Material.GHAST_TEAR, 0);
+        dofusPlayer.setCooldown(Material.TNT, 0);
+        dofusPlayer.setCooldown(Material.WEEPING_VINES, 0);
 
         running = true;
+
+        dofusPlayer.sendMessage(ChatColorUtils.feedback("Tu as reçu les pouvoirs de Dofus"));
 
         return true;
     }
@@ -104,7 +106,7 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
 
     @Override
     public void resetParameters() {
-        azadaxPlayerParameter = new SinglePlayerParameter("Azadax powers", "A qui les pouvoirs d'Azadax ?", true);
+        dofusPlayerParameter = new SinglePlayerParameter("Dofus powers", "A qui les pouvoirs de Dofus ?", true);
     }
 
     private boolean running;
@@ -118,15 +120,15 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
 
     @Override
     public List<AParameter> getParameters() {
-        List<AParameter> parameters = Arrays.asList(azadaxPlayerParameter);
+        List<AParameter> parameters = Arrays.asList(dofusPlayerParameter);
         return parameters;
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        Player azadaxPlayer = azadaxPlayerParameter.getConcernedPlayer();
-        if (event.getPlayer() == azadaxPlayer) {
-            Inventory inv = azadaxPlayer.getInventory();
+        Player dofusPlayer = dofusPlayerParameter.getConcernedPlayer();
+        if (event.getPlayer() == dofusPlayer) {
+            Inventory inv = dofusPlayer.getInventory();
             inv.setItem(4, getBramblesItem());
             inv.setItem(5, getCrazyPuppetItem());
             inv.setItem(6, getSacrificedPuppetItem());
@@ -137,7 +139,7 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getWhoClicked() != azadaxPlayerParameter.getConcernedPlayer()) return;
+        if (event.getWhoClicked() != dofusPlayerParameter.getConcernedPlayer()) return;
         if (event.getSlot() >= 4 && event.getSlot() <= 8) {
             event.setCancelled(true);
         }
@@ -147,7 +149,7 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasItem()) return;
         Player player = event.getPlayer();
-        if (player != azadaxPlayerParameter.getConcernedPlayer()) {
+        if (player != dofusPlayerParameter.getConcernedPlayer()) {
             UUID playerId = player.getUniqueId();
             if (!playerBlocked.containsKey(playerId) || !playerBlocked.get(playerId)) return;
             for (int i = 4; i < 9; i++) {
@@ -183,7 +185,7 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
-        if (player != azadaxPlayerParameter.getConcernedPlayer()) return;
+        if (player != dofusPlayerParameter.getConcernedPlayer()) return;
 
         if (event.getRightClicked() instanceof Mob
                 && ItemHelper.isSameItemKind(player.getInventory().getItem(event.getHand()), getTreeingItem())) {
@@ -198,10 +200,10 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (event.getPlayer() != azadaxPlayerParameter.getConcernedPlayer()) return;
+        if (event.getPlayer() != dofusPlayerParameter.getConcernedPlayer()) return;
         boolean isItem = false;
-        for (int i = 0; i < azadaxItems.size() && !isItem; i++) {
-            isItem |= ItemHelper.isSameItemKind(event.getItemDrop().getItemStack(), azadaxItems.get(i));
+        for (int i = 0; i < dofusItems.size() && !isItem; i++) {
+            isItem |= ItemHelper.isSameItemKind(event.getItemDrop().getItemStack(), dofusItems.get(i));
         }
         if (!isItem) return;
 
@@ -210,10 +212,10 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
 
     @EventHandler
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
-        if (event.getPlayer() != azadaxPlayerParameter.getConcernedPlayer()) return;
+        if (event.getPlayer() != dofusPlayerParameter.getConcernedPlayer()) return;
         boolean isItem = false;
-        for (int i = 0; i < azadaxItems.size() && !isItem; i++) {
-            isItem |= ItemHelper.isSameItemKind(event.getOffHandItem(), azadaxItems.get(i));
+        for (int i = 0; i < dofusItems.size() && !isItem; i++) {
+            isItem |= ItemHelper.isSameItemKind(event.getOffHandItem(), dofusItems.get(i));
         }
         if (!isItem) return;
 
@@ -249,7 +251,7 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
 
         if (crazyEntity != null) {
             for (Player player : Common.server.getOnlinePlayers()) {
-                if (player == azadaxPlayerParameter.getConcernedPlayer()) continue;
+                if (player == dofusPlayerParameter.getConcernedPlayer()) continue;
                 Boolean oldState = false;
                 if (playerBlocked.containsKey(player.getUniqueId()))
                     oldState = playerBlocked.get(player.getUniqueId());
@@ -265,89 +267,89 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
     }
 
     private void applyAbsorbing(Entity ety) {
-        Player azadaxPlayer = azadaxPlayerParameter.getConcernedPlayer();
-        if (azadaxPlayer.getCooldown(Material.GHAST_TEAR) > 0) return;
+        Player dofusPlayer = dofusPlayerParameter.getConcernedPlayer();
+        if (dofusPlayer.getCooldown(Material.GHAST_TEAR) > 0) return;
 
         int cd = absorbCooldownTicks;
         if (ety == crazyEntity || ety == sacrificedEntity) {
             ((ArmorStand) ety).setHealth(0);
-            azadaxPlayer.setHealth(azadaxPlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            dofusPlayer.setHealth(dofusPlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         }
         else if (ety instanceof Mob) {
-            ((Mob) ety).damage(6, azadaxPlayer);
-            azadaxPlayer.setHealth(Math.min(azadaxPlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), azadaxPlayer.getHealth() + 3));
+            ((Mob) ety).damage(6, dofusPlayer);
+            dofusPlayer.setHealth(Math.min(dofusPlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), dofusPlayer.getHealth() + 3));
             cd = cd / 15;
         }
         else return;
 
-        Bukkit.broadcastMessage(azadaxPlayer.getDisplayName() + " lance Sacrifice Poupesque");
-        azadaxPlayer.setCooldown(Material.GHAST_TEAR, cd);
+        Bukkit.broadcastMessage(dofusPlayer.getDisplayName() + " lance Sacrifice Poupesque");
+        dofusPlayer.setCooldown(Material.GHAST_TEAR, cd);
     }
 
     private void treeEntity(Entity ety) {
-        Player azadaxPlayer = azadaxPlayerParameter.getConcernedPlayer();
-        if (azadaxPlayer.getCooldown(Material.OAK_SAPLING) > 0) return;
+        Player dofusPlayer = dofusPlayerParameter.getConcernedPlayer();
+        if (dofusPlayer.getCooldown(Material.OAK_SAPLING) > 0) return;
 
         Location loc = ety.getLocation();
         ety.remove();
         loc.getWorld().generateTree(loc, Common.rng, TreeType.BIG_TREE);
 
-        Bukkit.broadcastMessage(azadaxPlayer.getDisplayName() + " lance Puissance Sylvestre");
-        azadaxPlayer.setCooldown(Material.OAK_SAPLING, treeingCooldownTicks);
+        Bukkit.broadcastMessage(dofusPlayer.getDisplayName() + " lance Puissance Sylvestre");
+        dofusPlayer.setCooldown(Material.OAK_SAPLING, treeingCooldownTicks);
     }
 
     private void invokeSacrificed() {
-        Player azadaxPlayer = azadaxPlayerParameter.getConcernedPlayer();
-        if (azadaxPlayer.getCooldown(Material.TNT) > 0) return;
+        Player dofusPlayer = dofusPlayerParameter.getConcernedPlayer();
+        if (dofusPlayer.getCooldown(Material.TNT) > 0) return;
 
-        Block block = azadaxPlayer.getTargetBlock(null, 8);
-        Location upperLocation = new Location(azadaxPlayer.getWorld(), block.getX(), block.getY() + 1, block.getZ());
+        Block block = dofusPlayer.getTargetBlock(null, 8);
+        Location upperLocation = new Location(dofusPlayer.getWorld(), block.getX(), block.getY() + 1, block.getZ());
         if (block == null
                 || block.getWorld().getMaxHeight() - 2 < block.getY()
                 || block.getWorld().getBlockAt(block.getX(), block.getY() + 1, block.getZ()).getType() != Material.AIR
                 || block.getWorld().getBlockAt(block.getX(), block.getY() + 2, block.getZ()).getType() != Material.AIR) {
 
-            azadaxPlayer.sendMessage("Le sort doit être lancé vers un bloc qui a deux espace libre au dessus de lui");
+            dofusPlayer.sendMessage("Le sort doit être lancé vers un bloc qui a deux espace libre au dessus de lui");
             return;
         }
 
-        sacrificedEntity = azadaxPlayer.getWorld().spawnEntity(upperLocation, EntityType.ARMOR_STAND);
+        sacrificedEntity = dofusPlayer.getWorld().spawnEntity(upperLocation, EntityType.ARMOR_STAND);
         sacrificedTicksRemaining = 2;
         sacrificedEntity.setCustomName("La Sacrifiée");
 
-        Bukkit.broadcastMessage(azadaxPlayer.getDisplayName() + " lance Invocation La Sacrifiée");
-        azadaxPlayer.setCooldown(Material.TNT, sacrificedCooldownTicks);
+        Bukkit.broadcastMessage(dofusPlayer.getDisplayName() + " lance Invocation La Sacrifiée");
+        dofusPlayer.setCooldown(Material.TNT, sacrificedCooldownTicks);
     }
 
     private void invokeCrazy() {
-        Player azadaxPlayer = azadaxPlayerParameter.getConcernedPlayer();
-        if (azadaxPlayer.getCooldown(Material.ARMOR_STAND) > 0) return;
+        Player dofusPlayer = dofusPlayerParameter.getConcernedPlayer();
+        if (dofusPlayer.getCooldown(Material.ARMOR_STAND) > 0) return;
 
-        Block block = azadaxPlayer.getTargetBlock(null, 16);
-        Location upperLocation = new Location(azadaxPlayer.getWorld(), block.getX(), block.getY() + 1, block.getZ());
+        Block block = dofusPlayer.getTargetBlock(null, 16);
+        Location upperLocation = new Location(dofusPlayer.getWorld(), block.getX(), block.getY() + 1, block.getZ());
         if (block == null
                 || block.getWorld().getMaxHeight() - 2 < block.getY()
                 || block.getWorld().getBlockAt(block.getX(), block.getY() + 1, block.getZ()).getType() != Material.AIR
                 || block.getWorld().getBlockAt(block.getX(), block.getY() + 2, block.getZ()).getType() != Material.AIR) {
 
-            azadaxPlayer.sendMessage("Le sort doit être lancé vers un bloc qui a deux espace libre au dessus de lui");
+            dofusPlayer.sendMessage("Le sort doit être lancé vers un bloc qui a deux espace libre au dessus de lui");
             return;
         }
 
-        crazyEntity = azadaxPlayer.getWorld().spawnEntity(upperLocation, EntityType.ARMOR_STAND);
+        crazyEntity = dofusPlayer.getWorld().spawnEntity(upperLocation, EntityType.ARMOR_STAND);
         crazyEntity.setCustomName("La Folle");
 
-        Bukkit.broadcastMessage(azadaxPlayer.getDisplayName() + " lance Invocation La Folle");
-        azadaxPlayer.setCooldown(Material.ARMOR_STAND, crazyCooldownTicks);
+        Bukkit.broadcastMessage(dofusPlayer.getDisplayName() + " lance Invocation La Folle");
+        dofusPlayer.setCooldown(Material.ARMOR_STAND, crazyCooldownTicks);
     }
 
     private void invokeBrambles() {
-        Player azadaxPlayer = azadaxPlayerParameter.getConcernedPlayer();
-        if (azadaxPlayer.getCooldown(Material.WEEPING_VINES) > 0) return;
+        Player dofusPlayer = dofusPlayerParameter.getConcernedPlayer();
+        if (dofusPlayer.getCooldown(Material.WEEPING_VINES) > 0) return;
 
-        Location loc = azadaxPlayer.getLocation();
+        Location loc = dofusPlayer.getLocation();
 
-        Block block = azadaxPlayer.getTargetBlock(null, 12);
+        Block block = dofusPlayer.getTargetBlock(null, 12);
         if (block == null
                 || block.getType() == Material.AIR
                 || block.getWorld().getBlockAt(block.getX(), block.getY() + 1, block.getZ()).getType() != Material.AIR) {
@@ -355,7 +357,7 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
             block = block.getWorld().getBlockAt(block.getX() + vector.getBlockX(), block.getY() + vector.getBlockY(), block.getZ() + vector.getBlockZ());
 
             if (!checkBramblesInvokingValidity(block.getLocation(), 3)) {
-                azadaxPlayer.sendMessage("Le sort doit être lancé vers un bloc plein qui a un espace libre au dessus de lui");
+                dofusPlayer.sendMessage("Le sort doit être lancé vers un bloc plein qui a un espace libre au dessus de lui");
                 return;
             }
         }
@@ -367,11 +369,11 @@ public class AzadaxPowers implements Listener, ILaunchablePlugin {
             if (!(ety instanceof LivingEntity)) continue;
             if (ety.getLocation().distance(loc) > 3) continue;
 
-            ((LivingEntity) ety).damage(4, azadaxPlayer);
+            ((LivingEntity) ety).damage(4, dofusPlayer);
         }
 
-        Bukkit.broadcastMessage(azadaxPlayer.getDisplayName() + " lance Ronces Multiples");
-        azadaxPlayer.setCooldown(Material.WEEPING_VINES, bramblesCooldownTicks);
+        Bukkit.broadcastMessage(dofusPlayer.getDisplayName() + " lance Ronces Multiples");
+        dofusPlayer.setCooldown(Material.WEEPING_VINES, bramblesCooldownTicks);
     }
 
     private Boolean checkBramblesInvokingValidity(Location loc, int range) {

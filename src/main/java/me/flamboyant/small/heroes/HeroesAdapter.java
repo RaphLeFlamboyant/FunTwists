@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 
 public class HeroesAdapter implements ILaunchablePlugin {
     private List<ILaunchablePlugin> powerList = Arrays.asList(
-            AzadaxPowers.getInstance(),
-            BryanPowers.getInstance(),
-            DpkPowers.getInstance(),
+            DofusPowers.getInstance(),
+            LonesomePowers.getInstance(),
+            SacrificedPowers.getInstance(),
             FlamboyantPowers.getInstance(),
-            MskooPowers.getInstance(),
-            OneigPowers.getInstance()
+            MilkmanPowers.getInstance(),
+            SurvivalistPowers.getInstance()
     );
 
     private static HeroesAdapter instance;

@@ -18,30 +18,30 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.Arrays;
 import java.util.List;
 
-public class BryanPowers implements Listener, ILaunchablePlugin {
-    private SinglePlayerParameter bryanPlayerParameter = new SinglePlayerParameter("MARTBRYAN powers", "A qui les pouvoirs de MARTBRYAN ?", true);
+public class LonesomePowers implements Listener, ILaunchablePlugin {
+    private SinglePlayerParameter lonesomePlayerParameter = new SinglePlayerParameter("Lonesome powers", "A qui les pouvoirs de Lonesome ?", true);
     private BukkitTask checkTask;
     private int awayCount;
     private int friendshipCount;
 
-    private static BryanPowers instance;
-    public static BryanPowers getInstance()
+    private static LonesomePowers instance;
+    public static LonesomePowers getInstance()
     {
         if (instance == null)
         {
-            instance = new BryanPowers();
+            instance = new LonesomePowers();
         }
 
         return instance;
     }
 
-    protected BryanPowers()
+    protected LonesomePowers()
     {
     }
     @Override
     public boolean start() {
-        if (bryanPlayerParameter.getConcernedPlayer() == null) {
-            Bukkit.getLogger().info("Le joueur recevant le pouvoir de MARTBRYAN est absent du manhunt");
+        if (lonesomePlayerParameter.getConcernedPlayer() == null) {
+            Bukkit.getLogger().info("Le joueur recevant le pouvoir de Lonesome est absent du manhunt");
             return false;
         }
 
@@ -65,7 +65,7 @@ public class BryanPowers implements Listener, ILaunchablePlugin {
 
     @Override
     public void resetParameters() {
-        bryanPlayerParameter = new SinglePlayerParameter("MARTBRYAN powers", "A qui les pouvoirs de MARTBRYAN ?", true);
+        lonesomePlayerParameter = new SinglePlayerParameter("Lonesome powers", "A qui les pouvoirs de Lonesome ?", true);
     }
 
     private boolean running;
@@ -79,20 +79,20 @@ public class BryanPowers implements Listener, ILaunchablePlugin {
 
     @Override
     public List<AParameter> getParameters() {
-        List<AParameter> parameters = Arrays.asList(bryanPlayerParameter);
+        List<AParameter> parameters = Arrays.asList(lonesomePlayerParameter);
         return parameters;
     }
 
     private void checkDistanceToPeople() {
-        Player bryan = bryanPlayerParameter.getConcernedPlayer();
+        Player lonesome = lonesomePlayerParameter.getConcernedPlayer();
         for (Player player : Common.server.getOnlinePlayers()) {
-            if (player == bryan) continue;
-            if (player.getWorld() == bryan.getWorld() && player.getLocation().distance(bryan.getLocation()) < 500) {
+            if (player == lonesome) continue;
+            if (player.getWorld() == lonesome.getWorld() && player.getLocation().distance(lonesome.getLocation()) < 500) {
                 awayCount = -1;
                 friendshipCount++;
 
                 if (friendshipCount == 5)
-                    bryan.sendMessage(ChatColorUtils.feedback("Vous êtes heureux d'être proche des gens !"));
+                    lonesome.sendMessage(ChatColorUtils.feedback("Vous êtes heureux d'être proche des gens !"));
 
                 return;
             }
@@ -102,10 +102,10 @@ public class BryanPowers implements Listener, ILaunchablePlugin {
         friendshipCount = -1;
 
         if (awayCount == 2) {
-            bryan.sendMessage(ChatColorUtils.feedback("Vous vous sentez seul si loin de tous"));
+            lonesome.sendMessage(ChatColorUtils.feedback("Vous vous sentez seul si loin de tous"));
         } else if (awayCount == 5) {
-            bryan.sendMessage(ChatColorUtils.feedback("La solitude pèse sur votre armure (... ouvre ton inventaire !)"));
-            PlayerInventory inv = bryan.getInventory();
+            lonesome.sendMessage(ChatColorUtils.feedback("La solitude pèse sur votre armure (... ouvre ton inventaire !)"));
+            PlayerInventory inv = lonesome.getInventory();
             inv.setBoots(ItemHelper.generateItem(Material.DIAMOND_BOOTS, 1, "Bottes solitaire", Arrays.asList(), true, Enchantment.BINDING_CURSE, 1, false, true));
             inv.setChestplate(ItemHelper.generateItem(Material.DIAMOND_CHESTPLATE, 1, "Armure solitaire", Arrays.asList(), true, Enchantment.BINDING_CURSE, 1, false, true));
             inv.setHelmet(ItemHelper.generateItem(Material.DIAMOND_HELMET, 1, "Casque solitaire", Arrays.asList(), true, Enchantment.BINDING_CURSE, 1, false, true));
