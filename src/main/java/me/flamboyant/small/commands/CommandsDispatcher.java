@@ -1,10 +1,7 @@
 package me.flamboyant.small.commands;
 
 import me.flamboyant.configurable.gui.ConfigurablePluginListener;
-import me.flamboyant.small.ItemFaker;
-import me.flamboyant.small.MilkingFriends;
-import me.flamboyant.small.MobSummoningBall;
-import me.flamboyant.small.MangroveChaos;
+import me.flamboyant.small.*;
 import me.flamboyant.small.advancementfaker.AdvancementFaker;
 import me.flamboyant.small.heroes.HeroesAdapter;
 import me.flamboyant.small.stuffmirror.GetCraftAndLootMirroredListener;
@@ -44,6 +41,9 @@ public class CommandsDispatcher implements CommandExecutor {
                     break;
                 case "f_stuff_mirror":
                     pluginToLaunch = GetCraftAndLootMirroredListener.getInstance();
+                    break;
+                case "f_kill_cow_diamond":
+                    pluginToLaunch = KillCowMakeDiamonds.getInstance();
                     break;
                 default :
                     break;

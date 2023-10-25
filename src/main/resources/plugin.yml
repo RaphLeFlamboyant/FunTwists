@@ -24,3 +24,7 @@ commands:
   f_stuff_mirror:
     description: You and a target get duplicated item of each other
     permission: f_stuff_mirror.use
+  f_kill_cow_diamond:
+    description: Kill cos make spawn diamonds
+    permission: f_kill_cow_diamond.use
+    
